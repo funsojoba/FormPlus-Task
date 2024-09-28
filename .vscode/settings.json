@@ -1,0 +1,5 @@
+{
+    "files.autoSave": "onFocusChange",
+    "workbench.editor.alwaysShowEditorActions": true,
+    "workbench.editor.centeredLayoutAutoResize": false
+}

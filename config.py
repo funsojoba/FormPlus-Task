@@ -1,15 +1,23 @@
 import os
 
-class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'supersecretkey'
 
-    MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://localhost:27017/form_management_db'
+
+class Config:
+    MONGO_URI = (
+        'mongodb://' + os.environ.get('MONGODB_USERNAME') 
+        + ':'
+        + os.environ.get('MONGODB_PASSWORD')
+        + '@'
+        + os.environ.get('MONGODB_HOSTNAME')
+        + ':27017/'
+        + os.environ.get('MONGODB_DATABASE')
+        + '?authSource=admin&retryWrites=true&w=majority'
+    )
+    SECRET_KEY = os.environ.get('SECRET_KEY') or ''
 
     DEBUG = os.environ.get('DEBUG') or True
 
 
-
-# You can add configurations for different environments like production or testing if needed.
 class ProductionConfig(Config):
     DEBUG = False
 

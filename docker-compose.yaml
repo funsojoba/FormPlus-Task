@@ -1,24 +1,43 @@
+
 services:
-  web:
+  app:
     build: .
+    container_name: form-management-app
     ports:
-    - "5000:5000" 
-    volumes:
-    - .:/code
-    depends_on:
-    - db
-  db:
-    image: mysql:5.
-    ports:
-    - "3306:3306"
+      - "5005:5000"
     environment:
-      - MYSQL_ROOT_PASSWORD=my-secret-pw
-      - MYSQL_DATABASE=my-db
-      - MYSQL_USER=my-user
-      - MYSQL_PASSWORD=my-secret-pw
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_ROOT_HOST=%
-      - MYSQL_INITDB_SKIP_TZINFO=yes
-      - MYSQL_INITDB_SKIP_DBS=mysql
-  
+      - MONGODB_USERNAME=${MONGODB_USERNAME}
+      - MONGODB_PASSWORD=${MONGODB_PASSWORD}
+      - MONGODB_DATABASE=${MONGODB_DATABASE}
+      - MONGODB_HOSTNAME=${MONGODB_HOSTNAME}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+    networks:
+      - form_management_net
+
+  mongo:
+    image: mongo:latest
+    container_name: form-management-mongo
+    restart: unless-stopped
+    hostname: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE}
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - form_management_net
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  form_management_net:
+    driver: bridge
