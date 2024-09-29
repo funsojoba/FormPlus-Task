@@ -3,10 +3,12 @@ from flask import Flask
 from config import Config
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
+from app import create_app
 
-application = Flask(__name__)
 
-application.config.from_object(Config)
+app = create_app()
+
+app.config.from_object(Config)
 
 def get_db():
     client = MongoClient(
@@ -22,7 +24,7 @@ def get_db():
 
 db = get_db()
 
-@application.route('/test-db')
+@app.route('/test-db')
 def test_db():
     try:
         test_db = db.get_collection(name=os.environ.get('MONGODB_DATABASE'))
@@ -37,4 +39,4 @@ if __name__ == "__main__":
         host="0.0.0.0", 
         port=5000, 
         use_reloader=True,
-        debug=app.config['DEBUG'])
+        debug=os.environ.get('ENV') == 'dev')

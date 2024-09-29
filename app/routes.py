@@ -6,6 +6,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+
 # Endpoint to create a form
 @app.route('/forms', methods=['POST'])
 def create_form():
